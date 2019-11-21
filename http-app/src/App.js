@@ -1,25 +1,9 @@
 import React, { Component } from "react";
-import axios from "axios";
+import { ToastContainer } from "react-toastify";
+import http from "./services/httpService";
+import config from "./config.json";
+import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
-const apiEndpoint = "https://jsonplaceholder.typicode.com/posts";
-
-//Only use try catch block when you have to do something as result of failure
-//Otherwise use interceptor
-//BUG: EXPECTER ERRORS ARE NOT BEING CAUGHT
-axios.interceptors.response.use(null, error => {
-  const expectedError =
-    error.response &&
-    error.response.status >= 400 &&
-    error.response.status < 500;
-
-  //Unexpected error happens
-  if (!expectedError) {
-    console.log("Logging error", error);
-    alert("An unexpected error occured");
-  }
-
-  return Promise.reject(error);
-});
 
 class App extends Component {
   state = {
@@ -30,7 +14,7 @@ class App extends Component {
     // pending > resolved (success) OR rejected (failure)
     // await word gets result of promise
     //need to put async in method signature in componentDidMount
-    const { data: posts } = await axios.get(apiEndpoint);
+    const { data: posts } = await http.get(config.apiEndpoint);
 
     this.setState({ posts });
   }
@@ -38,7 +22,7 @@ class App extends Component {
   //property for a function
   handleAdd = async () => {
     const obj = { title: "a", body: "b" };
-    const { data: post } = await axios.post(apiEndpoint, obj);
+    const { data: post } = await http.post(config.apiEndpoint, obj);
 
     const posts = [post, ...this.state.posts];
     this.setState({ posts });
@@ -50,7 +34,7 @@ class App extends Component {
     post.title = "UPDATED";
 
     //Put to update entire post
-    await axios.put("s" + apiEndpoint + "/" + post.id);
+    await http.put(config.apiEndpoint + "/" + post.id);
 
     //Clone posts array
     const posts = [...this.state.posts];
@@ -76,7 +60,7 @@ class App extends Component {
     //3. Wrap call to server in try catch block
 
     try {
-      await axios.delete(apiEndpoint + "/" + post.id);
+      await http.delete(config.apiEndpoint + "/" + post.id);
     } catch (ex) {
       if (ex.response && ex.response.status === 404)
         alert("This post has already been deleted");
@@ -87,6 +71,7 @@ class App extends Component {
   render() {
     return (
       <React.Fragment>
+        <ToastContainer />
         <button className="btn btn-primary" onClick={this.handleAdd}>
           Add
         </button>
