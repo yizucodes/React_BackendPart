@@ -1,10 +1,13 @@
 //Login and logout services
-import http from "./httpService";
 import { apiUrl } from "../config.json";
+import http from "./httpService";
 import jwtDecode from "jwt-decode";
 
 const apiEndpoint = apiUrl + "/auth";
 const tokenKey = "token";
+
+//Get jwt token and set it for httpService module.
+// http.setJwt(getJwt());
 
 //Save login response as jwt object
 export async function login(email, password) {
@@ -16,7 +19,7 @@ export function loginWithJwt(jwt) {
   localStorage.setItem(tokenKey, jwt);
 }
 
-export async function logout() {
+export function logout() {
   localStorage.removeItem(tokenKey);
 }
 
@@ -27,13 +30,20 @@ export function getCurrentUser() {
     //Return user object once jwt is decoded
     return jwtDecode(jwt);
   } catch (ex) {
+    //We do not have current user
     return null;
   }
 }
 
+export function getJwt() {
+  return localStorage.getItem(tokenKey);
+}
+
+//Export functions as objects
 export default {
   login,
   logout,
   getCurrentUser,
-  loginWithJwt
+  loginWithJwt,
+  getJwt
 };

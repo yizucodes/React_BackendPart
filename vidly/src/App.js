@@ -20,7 +20,7 @@ import "./App.css";
 class App extends Component {
   state = {};
 
-  //Get JSON web token (jwt), decode jwt to get current user, update state
+  //Get current user and update state
   componentDidMount() {
     const user = auth.getCurrentUser();
     this.setState({ user });
