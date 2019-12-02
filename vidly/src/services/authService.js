@@ -19,7 +19,7 @@ export function loginWithJwt(jwt) {
   localStorage.setItem(tokenKey, jwt);
 }
 
-export function logout() {
+export async function logout() {
   localStorage.removeItem(tokenKey);
 }
 
@@ -35,7 +35,9 @@ export function getCurrentUser() {
   }
 }
 
+//Get JSON web token
 export function getJwt() {
+  console.log("here");
   return localStorage.getItem(tokenKey);
 }
 

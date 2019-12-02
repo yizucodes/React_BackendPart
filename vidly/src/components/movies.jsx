@@ -7,6 +7,7 @@ import Pagination from "./common/pagination";
 import { getMovies, deleteMovie } from "../services/movieService";
 import { getGenres } from "../services/genreService";
 import { paginate } from "../utils/paginate";
+import auth from '../services/authService'
 import _ from "lodash";
 import SearchBox from "./searchBox";
 
@@ -18,7 +19,7 @@ class Movies extends Component {
     pageSize: 4,
     searchQuery: "",
     selectedGenre: null,
-    sortColumn: { path: "title", order: "asc" }
+    sortColumn: { path: "title", order: "asc" },
   };
 
   async componentDidMount() {
@@ -96,6 +97,7 @@ class Movies extends Component {
   render() {
     const { length: count } = this.state.movies;
     const { pageSize, currentPage, sortColumn, searchQuery } = this.state;
+    const { user } = this.props;
 
     if (count === 0) return <p>There are no movies in the database.</p>;
 
@@ -111,13 +113,14 @@ class Movies extends Component {
           />
         </div>
         <div className="col">
-          <Link
+          {user && <Link
             to="/movies/new"
             className="btn btn-primary"
             style={{ marginBottom: 20 }}
           >
             New Movie
-          </Link>
+          </Link>}
+
           <p>Showing {totalCount} movies in the database.</p>
           <SearchBox value={searchQuery} onChange={this.handleSearch} />
           <MoviesTable
